@@ -290,7 +290,7 @@ Resources:
             Branch: !Ref GitHubBranch
             OAuthToken: !Ref GitHubOAuthToken
           RunOrder: 1
-      - Name: Build
+      - Name: Testing-Build
         Actions: 
         - Name: CodeBuild
           ActionTypeId: 
@@ -304,6 +304,21 @@ Resources:
           - Name: BuildOutput
           Configuration:
             ProjectName: !Ref CodeBuild
+          RunOrder: 1
+      - Name: Staging
+        Actions:
+        - Name: ECS
+          ActionTypeId:
+            Category: Deploy
+            Owner: AWS
+            Version: 1
+            Provider: ECS
+          InputArtifacts:
+          - Name: BuildOutput
+          Configuration:
+            ClusterName: !Ref EcsCluster
+            ServiceName: !Ref EcsService
+            FileName: imagedefinitions.json
           RunOrder: 1
     DependsOn:
     - PipelineManagedPolicy
