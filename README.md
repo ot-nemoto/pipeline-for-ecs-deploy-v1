@@ -42,6 +42,32 @@ aws cloudformation create-stack \
     --template-body file://template.yaml
 ```
 
+**環境構築完了まで待機**
+
+```sh
+aws cloudformation wait stack-create-complete \
+    --stack-name pipeline-for-ecs-deploy-v1
+```
+
+**ECSサービスのタスクの上限数を変更**
+
+初期時に1以上にしていると、まだECRにイメージがない状態でコンテナを立ち上げようとし続けるので、タスクの上限数を0で構築しているため、構築完了後に、タスクの上限数を変更する
+
+```sh
+ECS_CLUSTER=$(aws cloudformation describe-stacks \
+    --stack-name pipeline-for-ecs-deploy-v1 \
+    --query 'Stacks[].Outputs[?OutputKey==`EcsCluster`].OutputValue' \
+    --output text)
+ECS_SERVICE=$(aws cloudformation describe-stacks \
+    --stack-name pipeline-for-ecs-deploy-v1 \
+    --query 'Stacks[].Outputs[?OutputKey==`EcsService`].OutputValue' \
+    --output text)
+aws ecs update-service \
+    --cluster ${ECS_CLUSTER} \
+    --service ${ECS_SERVICE} \
+    --desired-count 1
+```
+
 ## アンデプロイ
 
 **CloudFormationのステップ間でデータを受け渡すためのバケットを空にする**

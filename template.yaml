@@ -242,7 +242,7 @@ Resources:
     Properties:
       Cluster: !Ref EcsCluster
       LaunchType: FARGATE
-      DesiredCount: 1
+      DesiredCount: 0
       TaskDefinition: !Ref EcsTaskDefinition
       NetworkConfiguration:
         AwsvpcConfiguration:
@@ -434,6 +434,10 @@ Resources:
           Resource: "*"
 
 Outputs:
+  EcsCluster:
+    Value: !Ref EcsCluster
+  EcsService:
+    Value: !GetAtt EcsService.Name
   S3Bucket:
     Value: !Ref S3Bucket
   EcrRepository:
