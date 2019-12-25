@@ -1,9 +1,12 @@
 # pipeline-for-ecs-deploy-v1
 
+## 概要
 
-### Generate new token
+## 構成
 
-CloudFormationとGitHubを連携させるためにアクセストークンを生成
+## デプロイ
+
+**CloudFormationとGitHubを連携させるためにアクセストークンを生成**
 
 ```sh
 curl -u "your github username" \
@@ -16,7 +19,7 @@ curl -u "your github username" \
   # }
 ```
 
-生成したトークンをSSMパラメータストアに登録
+**生成したトークンをSSMパラメータストアに登録**
 
 ```sh
 GITHUB_OAUTH_TOKEN=774d8f6c********************************
@@ -30,11 +33,43 @@ aws ssm put-parameter \
   # }
 ```
 
-### Deploy
+**テンプレートから環境を構築**
 
 ```sh
 aws cloudformation create-stack \
     --stack-name pipeline-for-ecs-deploy-v1 \
     --capabilities CAPABILITY_NAMED_IAM \
     --template-body file://template.yaml
+```
+
+## アンデプロイ
+
+**CloudFormationのステップ間でデータを受け渡すためのバケットを空にする**
+
+```sh
+S3BUCKET=$(aws cloudformation describe-stacks \
+    --stack-name pipeline-for-ecs-deploy-v1 \
+    --query 'Stacks[].Outputs[?OutputKey==`S3Bucket`].OutputValue' \
+    --output text)
+aws s3 rm s3://${S3BUCKET} --recursive
+```
+
+**イメージリポジトリを空にする**
+
+```sh
+ECR_REPOSITORY=$(aws cloudformation describe-stacks \
+    --stack-name pipeline-for-ecs-deploy-v1 \
+    --query 'Stacks[].Outputs[?OutputKey==`EcrRepository`].OutputValue' \
+    --output text)
+for tag in $(aws ecr list-images --repository-name ${ECR_REPOSITORY} --query 'imageIds[].imageTag' --output text)
+do
+  aws ecr batch-delete-image --repository-name ${ECR_REPOSITORY} --image-ids imageTag=${tag}
+done
+```
+
+**環境を削除**
+
+```sh
+aws cloudformation delete-stack \
+    --stack-name pipeline-for-ecs-deploy-v1
 ```

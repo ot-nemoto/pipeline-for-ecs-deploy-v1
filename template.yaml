@@ -432,3 +432,9 @@ Resources:
           - devicefarm:CreateUpload
           - devicefarm:ScheduleRun
           Resource: "*"
+
+Outputs:
+  S3Bucket:
+    Value: !Ref S3Bucket
+  EcrRepository:
+    Value: !Ref EcrRepository
