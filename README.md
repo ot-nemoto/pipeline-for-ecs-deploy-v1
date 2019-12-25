@@ -8,7 +8,7 @@ GitHubの特定のブランチに更新が発生した場合、そのブラン�
 
 - CodePipelineはGitHubからのソースをダウンロードし、S3へ配置（**Source**）
 - CodeBuildでは、**Source**で配置されたソースコードの、テスト・ビルドを行い、dockerイメージを作成。作成したイメージをECRにpushし、イメージ情報をS3へ配置（**Testing-Build**）
-- ECSでは、**Testing-Build**でS3に配置されたイメージ情報でECSのタスク定義を再定義し、ECSサービスに再デプロイ（**Staging**）
+- **Testing-Build**でS3に配置されたイメージ情報から、ECSのタスク定義を再定義し、ECSサービスに再デプロイ（**Staging**）
 
 ## デプロイ
 
