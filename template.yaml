@@ -236,7 +236,7 @@ Resources:
   EcsCluster:
     Type: AWS::ECS::Cluster
     Properties:
-      ClusterName: pipeline-for-ecs-deploy-v1
+      ClusterName: !Ref Name
   EcsService:
     Type: AWS::ECS::Service
     Properties:
