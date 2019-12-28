@@ -78,12 +78,12 @@ Resources:
         ToPort: 3000
         IpProtocol: tcp
 
-  ##### ######  ####  #####      ##   #    # #####     #####  #    # # #      #####
-    #   #      #        #       #  #  ##   # #    #    #    # #    # # #      #    #
-    #   #####   ####    #      #    # # #  # #    #    #####  #    # # #      #    #
-    #   #           #   #      ###### #  # # #    #    #    # #    # # #      #    #
-    #   #      #    #   #      #    # #   ## #    #    #    # #    # # #      #    #
-    #   ######  ####    #      #    # #    # #####     #####   ####  # ###### #####
+  ##### ######  ####  ##### # #    #  ####       ##   #    # #####     #####  #    # # #      #####
+    #   #      #        #   # ##   # #    #     #  #  ##   # #    #    #    # #    # # #      #    #
+    #   #####   ####    #   # # #  # #         #    # # #  # #    #    #####  #    # # #      #    #
+    #   #           #   #   # #  # # #  ###    ###### #  # # #    #    #    # #    # # #      #    #
+    #   #      #    #   #   # #   ## #    #    #    # #   ## #    #    #    # #    # # #      #    #
+    #   ######  ####    #   # #    #  ####     #    # #    # #####     #####   ####  # ###### #####
   CodeBuild:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -125,7 +125,6 @@ Resources:
           artifacts:
             files:
             - imagedefinitions.json
-            #- '**/*'
       TimeoutInMinutes: 60
     DependsOn:
     - CodeBuildManagedPolicy
@@ -142,11 +141,9 @@ Resources:
           Action:
           - sts:AssumeRole
       Path: /service-role/
-      RoleName: !Sub "codebuild-${Name}-service-role"
   CodeBuildManagedPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      ManagedPolicyName: !Sub "CodeBuild-${Name}-ManagedPolicy"
       Roles:
       - !Ref CodeBuildServiceRole
       PolicyDocument:
@@ -335,11 +332,9 @@ Resources:
           Action:
           - sts:AssumeRole
       Path: /service-role/
-      RoleName: !Sub "codepipeline-${Name}-service-role"
   PipelineManagedPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      ManagedPolicyName: !Sub "CodePipeline-${Name}-ManagedPolicy"
       Roles:
       - !Ref PipelineServiceRole
       PolicyDocument:
