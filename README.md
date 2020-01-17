@@ -50,6 +50,18 @@ aws cloudformation create-stack \
     --template-body file://template.yaml
 ```
 
+**Parameters**
+
+|ParameterKey|Type|DefaultParameterValue|Description|
+|--|--|--|--|
+|Name|String|pipeline-for-ecs-deploy-v1|パイプライン等の名前|
+|GitHubOwner|String|[nemodija](https://github.com/nemodija)|GitHubリポジトリのオーナー|
+|GitHubRepo|String|[hello-node-world-by-express](https://github.com/nemodija/hello-node-world-by-express)|GitHubリポジトリ名|
+|GitHubBranch|String|master|GitHubリポジトリのブランチ名|
+|GitHubOAuthToken|AWS::SSM::Parameter::Value\<String>|pipeline-for-ecs-deploy-v1-github-oauth-token|GitHubトークンを設定した、SSMパラメータストア名|
+
+※リポジトリを指定したい場合は、*GitHubOwner*、*GitHubRepo*（必要であれば*GitHubBranch*も）を指定してください。
+
 **環境構築完了まで待機**
 
 ```sh
